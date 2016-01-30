@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+set -x
+/usr/local/bin/tor >> /tmp/tor.log 2>&1 &
+while : ; do
+	if tail -n 1 /tmp/tor.log | grep 'Bootstrapped 100%: Done' > /dev/null 2>&1; then
+		break
+	fi
+	sleep 1
+done
+if [ $# -eq 2 ]; then
+	curl --socks5 127.0.0.1:9050 $1
+else
+	while read line; do
+		curl --socks5 127.0.0.1:9050 $line
+	done
+fi
+killall tor
+
