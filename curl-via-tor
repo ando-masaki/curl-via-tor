@@ -1,7 +1,9 @@
 #!/bin/zsh
 
+UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36'
+
 set -x
-/usr/local/bin/tor >> /tmp/tor.log 2>&1 &
+/usr/local/bin/tor > /tmp/tor.log 2>&1 &
 while : ; do
 	if tail -n 1 /tmp/tor.log | grep 'Bootstrapped 100%: Done' > /dev/null 2>&1; then
 		break
@@ -12,9 +14,10 @@ if [ $# -eq 1 ]; then
 	curl --socks5 127.0.0.1:9050 $1
 else
 	while read line; do
-		curl --socks5 127.0.0.1:9050 $line
+		curl -LI mazgi.com -o /dev/null -w '%{http_code}\n' -s --socks5 127.0.0.1:9050 -A $UA ${=line}
 		sleep 3
 	done
 fi
 killall tor
+rm -f /tmp/tor.log
 
