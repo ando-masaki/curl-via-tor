@@ -14,7 +14,7 @@ if [ $# -eq 1 ]; then
 	curl --socks5 127.0.0.1:9050 $1
 else
 	while read line; do
-		curl -LI mazgi.com -o /dev/null -w '%{http_code}\n' -s --socks5 127.0.0.1:9050 -A $UA ${=line}
+		curl -LI -o /dev/null -w '%{http_code}\n' -s --socks5 127.0.0.1:9050 -A $UA ${=line}
 		sleep 3
 	done
 fi
